@@ -10,6 +10,6 @@ Python3 -   Default in all servers.
 
 Pip3     - # apt-get install -y python3-pip
 
-Boto3   - # pip install boto3
+Boto3   - # pip3 install boto3
 
 
