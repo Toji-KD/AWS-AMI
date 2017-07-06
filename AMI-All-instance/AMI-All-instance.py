@@ -4,7 +4,7 @@ import datetime
 import sys
 
 ##### Retention in days ######
-Retention = 0                #
+Retention = 4    #Specify retention period here
 ##############################
 
 #This scipt takes AMI of all instances in the region configured in AWS-CLI
@@ -46,7 +46,7 @@ for Image in Img_info['Images']:
   D1=datetime.datetime.now()
   D=D1-D2
   Days=int(D.days)
-  if Days >= Retention:
+  if Days > Retention:
     try:
       I2 = client.deregister_image(ImageId= Image['ImageId'])
       if I2['ResponseMetadata']['HTTPStatusCode'] == 200:
