@@ -4,11 +4,11 @@ import datetime
 import sys
 
 ### ID of instance to be Backed-up ###
-I = ['i-0f51537da89ac11ab'] #Specify instance ids here. IDs should be comma sepereated with in single quotes.
+I = ['i-Instance-1','i-Instance-2'] #Specify instance ids here. IDs should be comma sepereated with in single quotes.
+
+##### Retention in days ##############
+Retention = 4 #specify retention here#
 ######################################
-##### Retention in days ######
-Retention = 0                #
-##############################
 
 #This scipt takes AMI of all running instance for the Region configured in AWS cli-tools. 
 #AMIs and its associated snapshots will be removed accoding to the retention period.
@@ -50,7 +50,7 @@ for Image in Img_info['Images']:
   D1=datetime.datetime.now()
   D=D1-D2
   Days=int(D.days)
-  if Days >= Retention:
+  if Days > Retention:
     try:
       I2 = client.deregister_image(ImageId= Image['ImageId'])
       if I2['ResponseMetadata']['HTTPStatusCode'] == 200:
