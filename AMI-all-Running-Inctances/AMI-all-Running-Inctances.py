@@ -2,7 +2,19 @@
 import boto3
 import datetime
 import sys
-Retention = 2 #Retention in days
+##### Retention in days ######
+Retention = 4                #
+##############################
+
+#This scipt takes AMI of all running instance for the Region configured in AWS cli-tools. 
+#AMIs and its associated snapshots will be removed accoding to the retention period.
+#
+##### Server Requirements ####################
+# AWS CLI - # pip install awscli , # aws configure
+# Python3 -   Default in all servers.
+# Pip     - # apt-get install -y python3-pip
+# Boto3   - # pip install boto3
+##############################################
 
 #Creating AMI
 Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
