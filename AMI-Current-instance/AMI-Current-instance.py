@@ -4,9 +4,8 @@ import datetime
 import sys
 import requests
 
-######################################
 ##### Retention in days ######
-Retention = 0               #
+Retention = 4       #Specify retention here #
 ##############################
 
 #This scipt takes AMI of current instance (Instance of this script configured)
@@ -52,7 +51,7 @@ for Image in Img_info['Images']:
   D1=datetime.datetime.now()
   D=D1-D2
   Days=int(D.days)
-  if Days >= Retention:
+  if Days > Retention:
     try:
       I2 = client.deregister_image(ImageId= Image['ImageId'])
       if I2['ResponseMetadata']['HTTPStatusCode'] == 200:
