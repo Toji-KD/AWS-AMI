@@ -11,5 +11,5 @@ AMIs and its associated snapshots will be removed according to the retention per
  
  Pip     - # apt-get install -y python3-pip
  
- Boto3   - # pip install boto3
+ Boto3   - # pip3 install boto3
 
