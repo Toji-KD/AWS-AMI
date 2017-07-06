@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+import boto3
+import datetime
+import sys
+Retention = 2 #Retention in days
+
+#Creating AMI
+Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
+ec2 = boto3.resource('ec2')
+client = boto3.client('ec2')
+Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['AMI of *']}])
+
+I = client.describe_instance_status()
+for instance in I['InstanceStatuses']:
+	try:
+		J = client.create_image(Description='AMI of '+instance['InstanceId']+' Dated '+Time_Now, InstanceId=instance['InstanceId'], Name='AMI of '+instance['InstanceId']+' Dated '+Time_Now, NoReboot=True)
+		if isinstance(J['ImageId'],str):
+			print('AMI '+J['ImageId']+' Taken sucessfully for Instance ',instance['InstanceId'])
+		else:
+			print('Error in taking AMI')
+	except:
+		print('Script couldnt take AMI')
+print(' ')
+#Retention check
+try:
+	I1 = Img_info['Images'][0]['ImageId']
+except:
+	print('No AMIs available in this region. Exiting..')
+	sys.exit()
+#Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['AMI of *']}])
+for Image in Img_info['Images']:
+  d2= Image['CreationDate'].split('T')[0]
+  D2=datetime.datetime.strptime(d2, "%Y-%m-%d")
+  D1=datetime.datetime.now()
+  D=D1-D2
+  Days=int(D.days)
+  if Days > Retention:
+    try:
+      I2 = client.deregister_image(ImageId= Image['ImageId'])
+      if I2['ResponseMetadata']['HTTPStatusCode'] == 200:
+        print('Deregistering AMI ',Image['ImageId'])
+      else:
+        print('Error in removing AMI')
+    except:
+      print('Script couldnt remove AMI')
+			
+    try:
+      I3 = client.delete_snapshot(SnapshotId= Image['BlockDeviceMappings'][0]['Ebs']['SnapshotId'])
+      if I3['ResponseMetadata']['HTTPStatusCode'] ==200:
+        print('Removing SnapShot ',Image['BlockDeviceMappings'][0]['Ebs']['SnapshotId'])
+      else:
+        print('Error in removing Snapshot')
+    except:
+      print('Script couldnt remove Snapshot')
+			
+  else:
+    print('Not removing AMI '+Image['ImageId']+' and snapshot '+Image['BlockDeviceMappings'][0]['Ebs']['SnapshotId']+' as they come under retention period')
+
