@@ -5,7 +5,11 @@ AMIs and its associated snapshots shall be removed as per the retention period c
 
 # Server Requirements
 AWS CLI - # pip install awscli , # aws configure
+
 Python3 -   Default in all servers.
+
 Pip3     - # apt-get install -y python3-pip
+
 Boto3   - # pip install boto3
+
 
