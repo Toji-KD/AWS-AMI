@@ -19,7 +19,9 @@ Retention = 4 #specify retention here#
 # Pip3     - # apt-get install -y python3-pip
 # Boto3   - # pip3 install boto3
 ##############################################
-
+# Written by Toji K Dominic 
+# tojikdominic@gmail.com +91 9747389586
+##############################################
 #Creating AMI
 Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
 ec2 = boto3.resource('ec2')
