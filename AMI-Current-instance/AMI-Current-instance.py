@@ -14,10 +14,12 @@ Retention = 4       #Specify retention here #
 ##### Server Requirements ####################
 # AWS CLI - # pip install awscli , # aws configure
 # Python3 -   Default in all servers.
-# Pip     - # apt-get install -y python3-pip
+# Pip3     - # apt-get install -y python3-pip
 # Boto3   - # pip install boto3
 ##############################################
-
+# Written by Toji K Dominic 
+# tojikdominic@gmail.com +91 9747389586
+##############################################
 ID = requests.get('http://169.254.169.254/latest/meta-data/instance-id')
 ID = ID.text
 
