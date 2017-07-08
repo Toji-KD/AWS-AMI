@@ -12,10 +12,12 @@ Retention = 4                #
 ##### Server Requirements ####################
 # AWS CLI - # pip install awscli , # aws configure
 # Python3 -   Default in all servers.
-# Pip     - # apt-get install -y python3-pip
+# Pip3     - # apt-get install -y python3-pip
 # Boto3   - # pip install boto3
 ##############################################
-
+# Written by Toji K Dominic 
+# tojikdominic@gmail.com +91 9747389586
+##############################################
 #Creating AMI
 Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
 ec2 = boto3.resource('ec2')
