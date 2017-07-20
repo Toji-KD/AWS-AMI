@@ -51,8 +51,8 @@ print(' ')
 try:
 	I1 = Img_info['Images'][0]['ImageId']
 except:
-	print('No AMIs available in this region. Exiting..')
-	logging.info('No AMIs available in this region. Exiting..')
+	print('No AMIs available in this region to check retention. Exiting..')
+	logging.info('No AMIs available in this region to check retention. Exiting..')
 	sys.exit()
 	
 for Image in Img_info['Images']:
