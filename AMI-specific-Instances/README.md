@@ -1,5 +1,6 @@
 
 #This scipt takes AMI of all instances specified in script. 
+
 #AMIs and its associated snapshots will be removed accoding to the retention period.
 #
 ##### Server Requirements ####################
