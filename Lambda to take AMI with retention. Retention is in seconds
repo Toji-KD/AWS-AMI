@@ -1,0 +1,89 @@
+
+import boto3
+import datetime
+import sys
+
+def lambda_handler(event, context):
+
+
+
+    ### ID of instance to be Backed-up ###
+    I = ['i-000b082ac2763724a'] #Specify instance ids here. IDs should be comma sepereated with in single quotes.
+
+    ##### Retention in Seconds | 3 hours here ##############
+    Retention = 10800 # #specify retention in seconds here#
+    ######################################
+
+    #This scipt takes AMI of all running instance for the Region configured in AWS cli-tools. 
+    #AMIs and its associated snapshots will be removed accoding to the retention period.
+    #
+    ##### Server Requirements ####################
+    # AWS CLI - # pip install awscli , # aws configure
+    # Python3 -   Default in all servers.
+    # Pip3     - # apt-get install -y python3-pip
+    # Boto3   - # pip3 install boto3
+    ##############################################
+    # Written by Toji K Dominic 
+    # tojikdominic@gmail.com +91 9747389586
+    ##############################################
+    #Creating AMI
+    Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
+    ec2 = boto3.resource('ec2')
+    client = boto3.client('ec2')
+    Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['AMI of *']}])
+    
+    for instance in I:
+    	try:
+    		J = client.create_image(Description='AMI of '+instance+' Dated '+Time_Now, InstanceId=instance, Name='AMI of '+instance+' Dated '+Time_Now, NoReboot=True)
+    		if isinstance(J['ImageId'],str):
+    			print('AMI '+J['ImageId']+' Taken sucessfully for Instance ',instance)
+    		else:
+    			print('Error in taking AMI')
+    	except Exception as e:
+    	  msg=str(e)
+    	  print(msg)
+    	  #sns.publish(TopicArn='arn:aws:sns:ap-south-1:773497028304:NAME',Message=msg,Subject='Lambda AMI Backup Error')
+    print(' ')
+    
+    #Retention check
+    try:
+    	I1 = Img_info['Images'][0]['ImageId']
+    except:
+    	print('No AMIs available in this region. Exiting..')
+    	sys.exit()
+    #Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['AMI of *']}])
+    for Image in Img_info['Images']:
+      print('image',Image)
+      d2= Image['CreationDate']
+      print('d2',d2)
+      D2=datetime.datetime.strptime(d2, "%Y-%m-%dT%H:%M:%S.%fz")
+      print('D2',D2)
+      D1=datetime.datetime.now()
+      print('D1',D1)
+      D=D1-D2
+      print('D',D)
+      Seconds=int(D.seconds)
+      print(Seconds)
+      if Seconds > Retention:
+        try:
+          I2 = client.deregister_image(ImageId= Image['ImageId'])
+          if I2['ResponseMetadata']['HTTPStatusCode'] == 200:
+            print('Removing AMI ',Image['ImageId'])
+          else:
+            print('Error in removing AMI')
+        except:
+          print('Script couldnt remove AMI')
+    			
+        try:
+          I3 = client.delete_snapshot(SnapshotId= Image['BlockDeviceMappings'][0]['Ebs']['SnapshotId'])
+          if I3['ResponseMetadata']['HTTPStatusCode'] ==200:
+            print('Removing SnapShot ',Image['BlockDeviceMappings'][0]['Ebs']['SnapshotId'])
+          else:
+            print('Error in removing Snapshot')
+        except:
+          print('Script couldnt remove Snapshot')
+    			
+      else:
+        print('Not removing AMI '+Image['ImageId']+' and snapshot '+Image['BlockDeviceMappings'][0]['Ebs']['SnapshotId']+' as they come under retention period')
+    
+    
