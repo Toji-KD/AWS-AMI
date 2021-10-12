@@ -7,19 +7,19 @@ import sys
 #Put 0 if you do not want retention option
 Retention = 0                
 ##########################################
-
+#AWS Region
+AWS_Region = 'us-east-1'
 
 Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
-ec2 = boto3.resource('ec2',region_name='us-east-1')
-client = boto3.client('ec2',region_name='us-east-1')
+ec2 = boto3.resource('ec2',region_name=AWS_Region)
+client = boto3.client('ec2',region_name=AWS_Region)
 Instance_Id = ec2.instances.filter(Filters=[{'Name': 'tag:role','Values': ['tkd']}])
-Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['LAMBDA 12102021 AMI of *']}])
+Img_info= client.describe_images(Filters=[{'Name': 'tag:Check_Retention','Values':['yes']}])
 
 ####   Function to get Instance Name  ###
 
 def get_instance_name(fid):
     # When given an instance ID as str e.g. 'i-1234567', return the instance 'Name' from the name tag.
-    ec2 = boto3.resource('ec2',region_name='us-east-1')
     ec2instance = ec2.Instance(fid)
     instancename = ''
     for tags in ec2instance.tags:
@@ -38,6 +38,7 @@ for instance in Instance_Id:
 			Instance_Name = Instance_Name+' Image backup'
 			image = ec2.Image(I['ImageId'])
 			image.create_tags(Tags=[{'Key': 'Name','Value': Instance_Name}])
+			image.create_tags(Tags=[{'Key': 'Check_Retention','Value': 'yes'}])
 
 		else:
 			print('Error in taking AMI for the instance',instance.id)
