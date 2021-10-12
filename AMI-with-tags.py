@@ -13,7 +13,7 @@ Time_Now = datetime.datetime.now().strftime("%Y-%m-%d/%H-%M-%S")
 ec2 = boto3.resource('ec2',region_name='us-east-1')
 client = boto3.client('ec2',region_name='us-east-1')
 Instance_Id = ec2.instances.filter(Filters=[{'Name': 'tag:role','Values': ['tkd']}])
-Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['AMI of *']}])
+Img_info= client.describe_images(Filters=[{'Name': 'name','Values':['LAMBDA 12102021 AMI of *']}])
 
 ####   Function to get Instance Name  ###
 
@@ -31,7 +31,7 @@ def get_instance_name(fid):
 
 for instance in Instance_Id:
 	try:
-		I = client.create_image(Description='AMI of '+instance.id+' Dated '+Time_Now, InstanceId=instance.id, Name='AMI of '+instance.id+' Dated '+Time_Now, NoReboot=True)
+		I = client.create_image(Description='AMI of '+instance.id+' Dated '+Time_Now, InstanceId=instance.id, Name='LAMBDA 12102021 AMI of '+instance.id+' Dated '+Time_Now, NoReboot=True)
 		if isinstance(I['ImageId'],str):
 			print('AMI '+I['ImageId']+' Taken sucessfully for the instance',instance.id)
 			Instance_Name = get_instance_name(instance.id)
